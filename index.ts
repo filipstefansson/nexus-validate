@@ -117,3 +117,5 @@ export class NexusValidateError extends Error {
     this.extensions = extensions;
   }
 }
+
+export { ValidationError as YupValidationError } from 'yup';
