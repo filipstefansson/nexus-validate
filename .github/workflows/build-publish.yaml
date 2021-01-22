@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   test:
-    name: build
+    name: build-publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,3 +11,9 @@ jobs:
       - run: yarn install
 
       - run: yarn build
+
+      - name: semantic-release
+        uses: cycjimmy/semantic-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
