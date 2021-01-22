@@ -1,0 +1,23 @@
+{
+  "name": "nexus-validate",
+  "version": "1.0.0",
+  "description": "Validation plugin for Nexus.",
+  "repository": "https://github.com/filipstefansson/nexus-validate",
+  "author": "Filip Stefansson <filip.stefansson@gmail.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare": "install-peers",
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "graphql": "^15.4.0",
+    "nexus": "^1.0.0",
+    "yup": "^0.32.8"
+  },
+  "devDependencies": {
+    "install-peers-cli": "^2.2.0",
+    "typescript": "^4.1.3"
+  }
+}
