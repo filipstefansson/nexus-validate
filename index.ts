@@ -12,7 +12,7 @@ import { ObjectShape } from 'yup/lib/object';
 type Yup = typeof yup;
 
 const FieldValidateResolverImport = printedGenTypingImport({
-  module: './validation',
+  module: 'nexus-validate',
   bindings: ['FieldValidateResolver'],
 });
 
@@ -48,7 +48,7 @@ export const defaultFormatError = ({
   error,
 }: FieldValidatePluginErrorConfig): Error => {
   if (error instanceof yup.ValidationError) {
-    return new ValidationError(error.message, {
+    return new NexusValidateError(error.message, {
       invalidArgs: error.path ? [error.path] : [],
     });
   }
@@ -56,7 +56,7 @@ export const defaultFormatError = ({
   return error;
 };
 
-export const fieldValidationPlugin = (
+export const fieldValidatePlugin = (
   validateConfig: FieldValidatePluginConfig = {}
 ) => {
   const { formatError = defaultFormatError } = validateConfig;
@@ -102,7 +102,7 @@ export const fieldValidationPlugin = (
   });
 };
 
-class ValidationError extends Error {
+export class NexusValidateError extends Error {
   extensions: {
     invalidArgs: string[];
   };
