@@ -11,20 +11,20 @@ import { ObjectShape } from 'yup/lib/object';
 
 type Yup = typeof yup;
 
-const FieldValidateResolverImport = printedGenTypingImport({
+const ValidateResolverImport = printedGenTypingImport({
   module: 'nexus-validate',
-  bindings: ['FieldValidateResolver'],
+  bindings: ['ValidateResolver'],
 });
 
 const fieldDefTypes = printedGenTyping({
   optional: true,
   name: 'validate',
   description: 'Validate mutation arguments.',
-  type: 'FieldValidateResolver<TypeName, FieldName>',
-  imports: [FieldValidateResolverImport],
+  type: 'ValidateResolver<TypeName, FieldName>',
+  imports: [ValidateResolverImport],
 });
 
-export type FieldValidateResolver<
+export type ValidateResolver<
   TypeName extends string,
   FieldName extends string
 > = (
@@ -33,20 +33,20 @@ export type FieldValidateResolver<
   ctx: GetGen<'context'>
 ) => MaybePromise<ObjectShape>;
 
-export interface FieldValidatePluginErrorConfig {
+export interface ValidatePluginErrorConfig {
   // can be of type `yup.ValidationError`
   error: Error | yup.ValidationError;
   args: any;
   ctx: GetGen<'context'>;
 }
 
-export interface FieldValidatePluginConfig {
-  formatError?: (config: FieldValidatePluginErrorConfig) => Error;
+export interface ValidatePluginConfig {
+  formatError?: (config: ValidatePluginErrorConfig) => Error;
 }
 
 export const defaultFormatError = ({
   error,
-}: FieldValidatePluginErrorConfig): Error => {
+}: ValidatePluginErrorConfig): Error => {
   if (error instanceof yup.ValidationError) {
     return new NexusValidateError(error.message, {
       invalidArgs: error.path ? [error.path] : [],
@@ -56,9 +56,7 @@ export const defaultFormatError = ({
   return error;
 };
 
-export const fieldValidatePlugin = (
-  validateConfig: FieldValidatePluginConfig = {}
-) => {
+export const validatePlugin = (validateConfig: ValidatePluginConfig = {}) => {
   const { formatError = defaultFormatError } = validateConfig;
 
   return plugin({
@@ -66,26 +64,34 @@ export const fieldValidatePlugin = (
     description: 'The validate plugin provides validation for arguments.',
     fieldDefTypes: fieldDefTypes,
     onCreateFieldResolver(config) {
-      const validate: FieldValidateResolver<any, any> =
+      const validate: ValidateResolver<any, any> =
         config.fieldConfig.extensions?.nexus?.config.validate;
 
-      // if the field doesn't have an validate field, don't worry about wrapping the resolver
+      // if the field doesn't have an validate field,
+      // don't worry about wrapping the resolver
       if (validate == null) {
         return;
       }
 
-      // if it does have this field, but it's not a function, it's wrong - let's provide a warning
+      // if it does have this field, but it's not a function,
+      // it's wrong - let's provide a warning
       if (typeof validate !== 'function') {
         console.error(
-          new Error(
-            `The validate property provided to ${
-              config.fieldConfig.name
-            } with type ${
-              config.fieldConfig.type
-            } should be a function, saw ${typeof validate}`
-          )
+          '\x1b[33m%s\x1b[0m',
+          `The validate property provided to [${
+            config.fieldConfig.name
+          }] with type [${
+            config.fieldConfig.type
+          }]. Should be a function, saw [${typeof validate}]`
         );
         return;
+      }
+
+      if (['Mutation', 'Query'].indexOf(config.parentTypeConfig.name) === -1) {
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          `The validate property was provided to [${config.fieldConfig.name}] with parent [${config.parentTypeConfig.name}]. Should have parent [Query] or [Mutation].`
+        );
       }
 
       return async (root, args, ctx, info, next) => {
