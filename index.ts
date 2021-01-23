@@ -65,7 +65,7 @@ export const defaultFormatError = ({
   error,
 }: ValidatePluginErrorConfig): Error => {
   if (error instanceof ValidationError) {
-    return new NexusValidateError(error.message, {
+    return new UserInputError(error.message, {
       invalidArgs: error.path ? [error.path] : [],
     });
   }
@@ -127,7 +127,7 @@ export const validatePlugin = (validateConfig: ValidatePluginConfig = {}) => {
   });
 };
 
-export class NexusValidateError extends Error {
+export class UserInputError extends Error {
   extensions: {
     invalidArgs: string[];
   };
@@ -143,4 +143,4 @@ export class NexusValidateError extends Error {
   }
 }
 
-export { ValidationError as YupValidationError } from 'yup';
+export { ValidationError };

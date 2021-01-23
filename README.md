@@ -4,7 +4,7 @@
 ![npm bundle size](https://img.shields.io/bundlephobia/min/nexus-validate)
 ![build-publish](https://github.com/filipstefansson/nexus-validate/workflows/build-publish/badge.svg)
 
-Add extra validation to [GraphQL Nexus](https://github.com/graphql-nexus/nexus) in a easy and expressive way.
+Add extra validation to [GraphQL Nexus](https://github.com/graphql-nexus/nexus) in an easy and expressive way.
 
 ```ts
 const UserMutation = extendType({
@@ -101,7 +101,8 @@ Trying to call the above with an invalid email will result in the following erro
     {
       "message": "email must be a valid email",
       "extensions": {
-        "invalidArgs": ["email"]
+        "invalidArgs": ["email"],
+        "code": "BAD_USER_INPUT"
       }
       ...
     }
@@ -114,6 +115,7 @@ Trying to call the above with an invalid email will result in the following erro
 If you don't want to use the built-in validation rules, you can roll your own by **throwing an error if an argument is invalid**, and **returning void** if everything is OK.
 
 ```ts
+import { UserInputError } from 'nexus-validate';
 t.field('createUser', {
   type: 'User',
   args: {
@@ -122,7 +124,7 @@ t.field('createUser', {
   // use args and context to check if email is valid
   validate(_, args, context) {
     if (args.email !== context.user.email) {
-      throw new NexusValidateError('not your email', {
+      throw new UserInputError('not your email', {
         invalidArgs: ['email'],
       });
     }
