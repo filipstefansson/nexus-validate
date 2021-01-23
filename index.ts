@@ -31,7 +31,7 @@ export type ValidateResolver<
   yup: Yup,
   args: ArgsValue<TypeName, FieldName>,
   ctx: GetGen<'context'>
-) => MaybePromise<ObjectShape>;
+) => MaybePromise<ObjectShape | void>;
 
 export interface ValidatePluginErrorConfig {
   // can be of type `yup.ValidationError`
@@ -97,8 +97,10 @@ export const validatePlugin = (validateConfig: ValidatePluginConfig = {}) => {
       return async (root, args, ctx, info, next) => {
         try {
           const schemaBase = await validate(yup, args, ctx);
-          const schema = yup.object().shape(schemaBase);
-          await schema.validate(args);
+          if (typeof schemaBase !== 'undefined') {
+            const schema = yup.object().shape(schemaBase);
+            await schema.validate(args);
+          }
           return next(root, args, ctx, info);
         } catch (error) {
           throw formatError({ error, args, ctx });
