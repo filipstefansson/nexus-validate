@@ -6,10 +6,27 @@ import {
   printedGenTyping,
   printedGenTypingImport,
 } from 'nexus/dist/core';
-import * as yup from 'yup';
+import {
+  ValidationError,
+  string,
+  number,
+  boolean,
+  date,
+  object,
+  array,
+} from 'yup';
 import { ObjectShape } from 'yup/lib/object';
 
-type Yup = typeof yup;
+const rules = {
+  string,
+  number,
+  boolean,
+  date,
+  object,
+  array,
+};
+
+type ValidationRules = typeof rules;
 
 const ValidateResolverImport = printedGenTypingImport({
   module: 'nexus-validate',
@@ -28,14 +45,14 @@ export type ValidateResolver<
   TypeName extends string,
   FieldName extends string
 > = (
-  yup: Yup,
+  rules: ValidationRules,
   args: ArgsValue<TypeName, FieldName>,
   ctx: GetGen<'context'>
 ) => MaybePromise<ObjectShape | void>;
 
 export interface ValidatePluginErrorConfig {
   // can be of type `yup.ValidationError`
-  error: Error | yup.ValidationError;
+  error: Error | ValidationError;
   args: any;
   ctx: GetGen<'context'>;
 }
@@ -47,7 +64,7 @@ export interface ValidatePluginConfig {
 export const defaultFormatError = ({
   error,
 }: ValidatePluginErrorConfig): Error => {
-  if (error instanceof yup.ValidationError) {
+  if (error instanceof ValidationError) {
     return new NexusValidateError(error.message, {
       invalidArgs: error.path ? [error.path] : [],
     });
@@ -96,9 +113,9 @@ export const validatePlugin = (validateConfig: ValidatePluginConfig = {}) => {
 
       return async (root, args, ctx, info, next) => {
         try {
-          const schemaBase = await validate(yup, args, ctx);
+          const schemaBase = await validate(rules, args, ctx);
           if (typeof schemaBase !== 'undefined') {
-            const schema = yup.object().shape(schemaBase);
+            const schema = object().shape(schemaBase);
             await schema.validate(args);
           }
           return next(root, args, ctx, info);
