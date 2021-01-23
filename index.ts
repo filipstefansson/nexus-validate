@@ -130,16 +130,21 @@ export const validatePlugin = (validateConfig: ValidatePluginConfig = {}) => {
 export class UserInputError extends Error {
   extensions: {
     invalidArgs: string[];
+    code: string;
   };
 
   constructor(
     message: string,
     extensions: {
       invalidArgs: string[];
+      code?: string;
     }
   ) {
     super(message);
-    this.extensions = extensions;
+    this.extensions = {
+      ...extensions,
+      code: extensions.code || 'BAD_USER_INPUT',
+    };
   }
 }
 
