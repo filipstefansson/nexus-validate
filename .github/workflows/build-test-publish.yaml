@@ -1,9 +1,9 @@
-name: build-publish
+name: build-test-publish
 on: [push]
 
 jobs:
   test:
-    name: build-publish
+    name: build-test-publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,6 +11,13 @@ jobs:
       - run: yarn install
 
       - run: yarn build
+
+      - run: yarn test --coverage
+
+      - name: upload to codecov.io
+        uses: codecov/codecov-action@v1.0.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: semantic-release
         uses: cycjimmy/semantic-release-action@v2

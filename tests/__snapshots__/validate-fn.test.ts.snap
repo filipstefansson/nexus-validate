@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`validatePlugin warns if validate is added in an invalid way 1`] = `
+Array [
+  "[33m%s[0m",
+  "The validate property was provided to [id] with parent [ShouldWarn]. Should have parent [Query] or [Mutation].",
+]
+`;
+
+exports[`validatePlugin warns if validate is added in an invalid way 2`] = `
+Array [
+  "[33m%s[0m",
+  "The validate property provided to [shouldWarn] with type [ShouldWarn!]. Should be a function, saw [object]",
+]
+`;

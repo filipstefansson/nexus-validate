@@ -8,3 +8,4 @@ yarn-error.log*
 node_modules/
 .yarn-integrity
 .vscode-test
+coverage
