@@ -1,0 +1,31 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "nexus-validate example",
+  "repository": "https://github.com/filipstefansson/nexus-validate",
+  "author": "Filip Stefansson <filip.stefansson@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "main": "api/index.ts",
+  "scripts": {
+    "start": "node dist/server",
+    "clean": "rm -rf dist",
+    "build": "yarn clean && yarn generate:nexus && tsc",
+    "generate:nexus": "ts-node --transpile-only src/schema",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/server"
+  },
+  "dependencies": {
+    "@vercel/node": "^1.9.0",
+    "apollo-server": "^2.19.2",
+    "apollo-server-micro": "^2.19.2",
+    "graphql": "^15.4.0",
+    "nexus": "^1.0.0",
+    "nexus-validate": "1.0.0-alpha.4",
+    "yup": "^0.32.8"
+  },
+  "devDependencies": {
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "1.0.0",
+    "typescript": "^4.1.3"
+  }
+}
