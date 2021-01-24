@@ -6,7 +6,6 @@
   "author": "Filip Stefansson <filip.stefansson@gmail.com>",
   "license": "MIT",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],

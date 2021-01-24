@@ -4,6 +4,7 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
+    "baseUrl": "src",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
