@@ -20,12 +20,10 @@ const UserMutation = extendType({
       },
 
       // add the extra validation
-      validate({ string, number }) {
-        return {
-          email: string().email(),
-          age: number().moreThan(18).integer(),
-        };
-      },
+      validate: ({ string, number }) => ({
+        email: string().email(),
+        age: number().moreThan(18).integer(),
+      }),
     });
   },
 });
@@ -39,6 +37,7 @@ const UserMutation = extendType({
   - [Custom errors](#custom-errors)
   - [Custom error messages](#custom-error-messages)
 - [API](#api)
+- [Examples](#examples)
 
 ## Installation
 
@@ -82,12 +81,10 @@ const UserMutation = extendType({
       args: {
         email: stringArg(),
       },
-      validate({ string }) {
-        return {
-          // validate that email is an actual email
-          email: string().email(),
-        };
-      },
+      validate: ({ string }) => ({
+        // validate that email is an actual email
+        email: string().email(),
+      }),
     });
   },
 });
@@ -165,13 +162,11 @@ const schema = makeSchema({
 If you want to change the error message for the validation rules, that's usually possible by passing a message to the rule:
 
 ```ts
-validate({ string }) {
-  return {
-    email: string()
-      .email('must be a valid email address')
-      .required('email is required'),
-  };
-}
+validate: ({ string }) => ({
+  email: string()
+    .email('must be a valid email address')
+    .required('email is required'),
+});
 ```
 
 ## API
@@ -201,7 +196,7 @@ t.field('createUser', {
     age: numberArg(),
   },
   // email and age will be typed as a string and a number
-  validate(_, { email, age }) {}
+  validate: (_, { email, age }) => {}
 }
 ```
 
@@ -215,7 +210,7 @@ t.field('createUser', {
   args: {
     email: stringArg(),
   },
-  async validate(_, { email }, { prisma }) {
+  validate: async (_, { email }, { prisma }) => {
     const count = await prisma.user.count({ where: { email } });
     if (count > 1) {
       throw new Error('email already taken');
@@ -223,6 +218,10 @@ t.field('createUser', {
   },
 });
 ```
+
+## Examples
+
+- [Hello World Example](examples/hello-world)
 
 ## License
 

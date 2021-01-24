@@ -1,0 +1,24 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "node dist/server",
+    "clean": "rm -rf dist",
+    "build": "yarn clean && yarn generate:nexus && tsc",
+    "generate:nexus": "ts-node --transpile-only src/schema",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/server"
+  },
+  "dependencies": {
+    "apollo-server": "^2.19.2",
+    "graphql": "^15.4.0",
+    "nexus": "^1.0.0",
+    "nexus-validate": "1.0.0-alpha.4",
+    "yup": "^0.32.8"
+  },
+  "devDependencies": {
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "1.0.0",
+    "typescript": "^4.1.3"
+  }
+}
