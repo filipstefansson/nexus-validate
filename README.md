@@ -37,6 +37,7 @@ const UserMutation = extendType({
   - [Custom errors](#custom-errors)
   - [Custom error messages](#custom-error-messages)
 - [API](#api)
+- [Examples](#examples)
 
 ## Installation
 
@@ -217,6 +218,10 @@ t.field('createUser', {
   },
 });
 ```
+
+## Examples
+
+- [Hello World Example](examples/hello-world)
 
 ## License
 
