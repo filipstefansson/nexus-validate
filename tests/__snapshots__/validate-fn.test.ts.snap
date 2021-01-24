@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`validatePlugin warns if validate is added in an invalid way 1`] = `
+exports[`validatePlugin warns if field are missing arguments 1`] = `
 Array [
   "[33m%s[0m",
-  "The validate property was provided to [id] with parent [ShouldWarn]. Should have parent [Query] or [Mutation].",
+  "[ShouldWarn.id] does not have any arguments, but a validate function was passed",
 ]
 `;
 
-exports[`validatePlugin warns if validate is added in an invalid way 2`] = `
+exports[`validatePlugin warns if validate is not a function 1`] = `
 Array [
   "[33m%s[0m",
   "The validate property provided to [shouldWarn] with type [ShouldWarn!]. Should be a function, saw [object]",

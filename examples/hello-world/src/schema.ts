@@ -1,6 +1,22 @@
-import { stringArg, makeSchema, mutationType, objectType, intArg } from 'nexus';
+import {
+  stringArg,
+  makeSchema,
+  mutationType,
+  objectType,
+  intArg,
+  queryType,
+} from 'nexus';
 import { validatePlugin, ValidationError } from 'nexus-validate';
 import { UserInputError } from 'apollo-server';
+
+let USERS = [
+  {
+    name: 'Test',
+    email: 'test@test.com',
+    age: 30,
+    website: 'https://website.com',
+  },
+];
 
 export const User = objectType({
   name: 'User',
@@ -8,8 +24,24 @@ export const User = objectType({
     t.string('name');
     t.string('email');
     t.int('age');
-    t.string('website');
+    t.string('website', {
+      validate: ({ string }) => ({
+        website: string().email().required(),
+      }),
+    });
     t.string('secret');
+    t.list.field('friends', {
+      type: User,
+      args: {
+        email: stringArg(),
+      },
+      validate: ({ string }) => ({
+        email: string().email(),
+      }),
+      resolve: (_, args) => {
+        return USERS;
+      },
+    });
   },
 });
 
@@ -42,6 +74,27 @@ const Mutation = mutationType({
       }),
       resolve: (_, args) => {
         return {
+          ...USERS[0],
+          ...args,
+        };
+      },
+    });
+  },
+});
+
+const Query = queryType({
+  definition(t) {
+    t.field('user', {
+      type: 'User',
+      args: {
+        email: stringArg(),
+      },
+      validate: ({ string }, args, ctx) => ({
+        email: string().email(),
+      }),
+      resolve: (_, args) => {
+        return {
+          ...USERS[0],
           ...args,
         };
       },
@@ -50,7 +103,7 @@ const Mutation = mutationType({
 });
 
 export const schema = makeSchema({
-  types: [User, Mutation],
+  types: [User, Mutation, Query],
   contextType: {
     module: require.resolve('./context'),
     export: 'Context',

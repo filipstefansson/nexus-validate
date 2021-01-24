@@ -4,9 +4,6 @@ import { intArg, mutationField, stringArg } from 'nexus/dist/core';
 import { UserInputError, validatePlugin } from '../src/index';
 
 describe('validatePlugin', () => {
-  const consoleWarnSpy = jest
-    .spyOn(console, 'warn')
-    .mockImplementation(() => {});
   const consoleErrorSpy = jest
     .spyOn(console, 'error')
     .mockImplementation(() => {});
@@ -100,7 +97,7 @@ describe('validatePlugin', () => {
     });
   });
 
-  it('warns if validate is added in an invalid way', async () => {
+  it('warns if field are missing arguments', async () => {
     const schema = makeSchema({
       outputs: false,
       nonNullDefaults: {
@@ -120,6 +117,33 @@ describe('validatePlugin', () => {
         mutationField('shouldWarn', {
           type: 'ShouldWarn',
           // @ts-ignore
+          resolve: () => ({ id: 1 }),
+        }),
+      ],
+    });
+    const { data } = await testOperation('shouldWarn', schema);
+    expect(data?.shouldWarn).toEqual({ id: 1 });
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    expect(consoleErrorSpy.mock.calls[0]).toMatchSnapshot();
+  });
+
+  it('warns if validate is not a function', async () => {
+    const schema = makeSchema({
+      outputs: false,
+      nonNullDefaults: {
+        output: true,
+      },
+      plugins: [validatePlugin()],
+      types: [
+        objectType({
+          name: 'ShouldWarn',
+          definition(t) {
+            t.int('id');
+          },
+        }),
+        mutationField('shouldWarn', {
+          type: 'ShouldWarn',
+          // @ts-ignore
           validate: {},
           resolve: () => ({ id: 1 }),
         }),
@@ -127,8 +151,6 @@ describe('validatePlugin', () => {
     });
     const { data } = await testOperation('shouldWarn', schema);
     expect(data?.shouldWarn).toEqual({ id: 1 });
-    expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
-    expect(consoleWarnSpy.mock.calls[0]).toMatchSnapshot();
     expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     expect(consoleErrorSpy.mock.calls[0]).toMatchSnapshot();
   });

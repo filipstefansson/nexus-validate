@@ -47,10 +47,11 @@ export const resolver = (validateConfig: ValidatePluginConfig = {}) => (
     return;
   }
 
-  if (['Mutation', 'Query'].indexOf(config.parentTypeConfig.name) === -1) {
-    console.warn(
+  const args = config?.fieldConfig?.args ?? {};
+  if (Object.keys(args).length === 0) {
+    console.error(
       '\x1b[33m%s\x1b[0m',
-      `The validate property was provided to [${config.fieldConfig.name}] with parent [${config.parentTypeConfig.name}]. Should have parent [Query] or [Mutation].`
+      `[${config.parentTypeConfig.name}.${config.fieldConfig.name}] does not have any arguments, but a validate function was passed`
     );
   }
 
