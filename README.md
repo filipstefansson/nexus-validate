@@ -1,8 +1,9 @@
 # nexus-validate
 
-![npm](https://img.shields.io/npm/v/nexus-validate)
-![npm bundle size](https://img.shields.io/bundlephobia/min/nexus-validate)
+[![npm](https://img.shields.io/npm/v/nexus-validate)](https://www.npmjs.com/package/nexus-validate)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/nexus-validate)](https://bundlephobia.com/result?p=nexus-validate)
 ![build-publish](https://github.com/filipstefansson/nexus-validate/workflows/build-publish/badge.svg)
+[![codecov](https://codecov.io/gh/filipstefansson/nexus-validate/branch/alpha/graph/badge.svg?token=MR3OPGNYBU)](https://codecov.io/gh/filipstefansson/nexus-validate)
 
 Add extra validation to [GraphQL Nexus](https://github.com/graphql-nexus/nexus) in an easy and expressive way.
 
