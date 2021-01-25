@@ -5,6 +5,8 @@ import {
   objectType,
   intArg,
   queryType,
+  inputObjectType,
+  arg,
 } from 'nexus';
 import { validatePlugin, ValidationError } from 'nexus-validate';
 import { UserInputError } from 'apollo-server';
@@ -18,26 +20,32 @@ let USERS = [
   },
 ];
 
+export const UserInput = inputObjectType({
+  name: 'UserInput',
+  definition(t) {
+    t.string('email');
+  },
+  // @ts-ignore requires https://github.com/graphql-nexus/nexus/pull/799
+  validate: ({ string }) => ({
+    email: string().email().required(),
+  }),
+});
+
 export const User = objectType({
   name: 'User',
   definition(t) {
     t.string('name');
     t.string('email');
     t.int('age');
-    t.string('website', {
-      validate: ({ string }) => ({
-        website: string().email().required(),
-      }),
-    });
+    t.string('website');
     t.string('secret');
     t.list.field('friends', {
       type: User,
       args: {
-        email: stringArg(),
+        query: arg({
+          type: UserInput,
+        }),
       },
-      validate: ({ string }) => ({
-        email: string().email(),
-      }),
       resolve: (_, args) => {
         return USERS;
       },

@@ -13,8 +13,12 @@ type Query {
 type User {
   age: Int
   email: String
-  friends(email: String): [User]
+  friends(query: UserInput): [User]
   name: String
   secret: String
   website: String
+}
+
+input UserInput {
+  email: String
 }

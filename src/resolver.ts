@@ -19,6 +19,10 @@ export type ValidateResolver<
   ctx: GetGen<'context'>
 ) => MaybePromise<ObjectShape | void>;
 
+export type InputObjectValidateResolver = (
+  rules: ValidationRules
+) => ObjectShape;
+
 export const resolver = (validateConfig: ValidatePluginConfig = {}) => (
   config: CreateFieldResolverInfo
 ): MiddlewareFn | undefined => {
