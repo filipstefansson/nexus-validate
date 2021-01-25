@@ -55,11 +55,12 @@ export interface NexusGenFieldTypes {
     createUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
-    ok: boolean; // Boolean!
+    user: NexusGenRootTypes['User'] | null; // User
   }
   User: { // field return type
     age: number | null; // Int
     email: string | null; // String
+    friends: Array<NexusGenRootTypes['User'] | null> | null; // [User]
     name: string | null; // String
     secret: string | null; // String
     website: string | null; // String
@@ -71,11 +72,12 @@ export interface NexusGenFieldTypeNames {
     createUser: 'User'
   }
   Query: { // field return type name
-    ok: 'Boolean'
+    user: 'User'
   }
   User: { // field return type name
     age: 'Int'
     email: 'String'
+    friends: 'User'
     name: 'String'
     secret: 'String'
     website: 'String'
@@ -90,6 +92,16 @@ export interface NexusGenArgTypes {
       name?: string | null; // String
       secret?: string | null; // String
       website?: string | null; // String
+    }
+  }
+  Query: {
+    user: { // args
+      email?: string | null; // String
+    }
+  }
+  User: {
+    friends: { // args
+      email?: string | null; // String
     }
   }
 }

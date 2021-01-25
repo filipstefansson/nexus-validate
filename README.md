@@ -71,7 +71,7 @@ const schema = makeSchema({
 
 ## Usage
 
-Validation can be added to the types `Query` and `Mutation` and will validate the `args` passed in when a request is made:
+The `validate` method can be added to any field with `args`:
 
 ```ts
 const UserMutation = extendType({

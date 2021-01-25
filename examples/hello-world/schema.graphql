@@ -7,12 +7,13 @@ type Mutation {
 }
 
 type Query {
-  ok: Boolean!
+  user(email: String): User
 }
 
 type User {
   age: Int
   email: String
+  friends(email: String): [User]
   name: String
   secret: String
   website: String
