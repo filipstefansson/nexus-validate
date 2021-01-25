@@ -15,6 +15,9 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  UserInput: { // input type
+    email?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -101,7 +104,7 @@ export interface NexusGenArgTypes {
   }
   User: {
     friends: { // args
-      email?: string | null; // String
+      query?: NexusGenInputs['UserInput'] | null; // UserInput
     }
   }
 }
@@ -114,7 +117,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 
