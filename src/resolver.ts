@@ -58,11 +58,13 @@ export const resolver = (validateConfig: ValidatePluginConfig = {}) => (
   return async (root, args, ctx, info, next) => {
     try {
       const schemaBase = await validate(rules, args, ctx);
+
+        let passedArgs = args;
       if (typeof schemaBase !== 'undefined') {
         const schema = rules.object().shape(schemaBase);
-        await schema.validate(args);
+        passedArgs = await schema.validate(args);
       }
-      return next(root, args, ctx, info);
+      return next(root, passedArgs, ctx, info);
     } catch (error) {
       throw formatError({ error, args, ctx });
     }
