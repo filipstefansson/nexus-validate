@@ -24,11 +24,7 @@ export const User = objectType({
     t.string('name');
     t.string('email');
     t.int('age');
-    t.string('website', {
-      validate: ({ string }) => ({
-        website: string().email().required(),
-      }),
-    });
+    t.string('website');
     t.string('secret');
     t.list.field('friends', {
       type: User,
