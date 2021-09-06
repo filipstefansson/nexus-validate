@@ -5,6 +5,7 @@ import {
   MaybePromise,
   MiddlewareFn,
 } from 'nexus/dist/core';
+import { ValidationError } from 'yup';
 
 import { ObjectShape, rules, ValidationRules } from './rules';
 import { ValidatePluginConfig } from './index';
@@ -63,7 +64,8 @@ export const resolver = (validateConfig: ValidatePluginConfig = {}) => (
         await schema.validate(args);
       }
       return next(root, args, ctx, info);
-    } catch (error) {
+    } catch (_error) {
+      const error = _error as Error | ValidationError
       throw formatError({ error, args, ctx });
     }
   };
