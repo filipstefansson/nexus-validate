@@ -1,5 +1,5 @@
 import { plugin } from 'nexus';
-import { printedGenTyping, printedGenTypingImport } from 'nexus/dist/core';
+import { printedGenTyping, printedGenTypingImport } from 'nexus/dist/utils';
 
 import { ValidatePluginErrorConfig, ValidationError } from './error';
 import { resolver } from './resolver';
