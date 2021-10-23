@@ -56,8 +56,8 @@ const Mutation = mutationType({
       // the rules from the first argument together with args and context
       // to figure out if the provided arguments are valid or not
       validate: ({ string, number }, args, ctx) => ({
-        name: string(),
-        email: string().email(),
+        name: string().trim(),
+        email: string().email().trim(),
         age: number().min(18),
         website: string().url(),
         // create a custom rule for secret that uses a custom test,
