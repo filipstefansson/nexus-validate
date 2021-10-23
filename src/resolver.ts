@@ -56,16 +56,17 @@ export const resolver =
       );
     }
 
-    return async (root, args, ctx, info, next) => {
+    return async (root, rawArgs, ctx, info, next) => {
       try {
-        const schemaBase = await validate(rules, args, ctx);
-
-        let passedArgs = args;
+        const schemaBase = await validate(rules, rawArgs, ctx);
+        // clone args so we can transform them when validating with yup
+        let args = { ...rawArgs };
         if (typeof schemaBase !== 'undefined') {
           const schema = rules.object().shape(schemaBase);
-          passedArgs = await schema.validate(args);
+          // update args to the transformed ones by yup
+          args = await schema.validate(args);
         }
-        return next(root, passedArgs, ctx, info);
+        return next(root, args, ctx, info);
       } catch (_error) {
         const error = _error as Error | ValidationError;
         throw formatError({ error, args, ctx });
