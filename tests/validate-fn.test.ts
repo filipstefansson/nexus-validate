@@ -218,4 +218,52 @@ describe('validatePlugin', () => {
       truncate: 5,
     });
   });
+
+  it('can check args against context inside of yup schema', async () => {
+    const schemaTypes = [
+      objectType({
+        name: 'User',
+        definition(t) {
+          t.int('id');
+        },
+      }),
+      mutationField('validate', {
+        type: 'User',
+        args: {
+          id: intArg()
+        },
+        // @ts-ignore
+        validate: ({ number }) => ({
+            id: number().test(
+              'is-allowed-id',
+              'given id is not allowed',
+              (value: number, testContext: any) => {
+                const graphQLContext = testContext.options.context;
+                return graphQLContext.user.id === value;
+              },
+            ),
+        }),
+        resolve: (_, args) => args,
+      })
+      ,
+    ];
+
+    const testSchema = makeSchema({
+      outputs: false,
+      types: schemaTypes,
+      nonNullDefaults: {
+        output: true,
+      },
+      plugins: [validatePlugin()],
+    });
+
+    const responseSuccess = await testOperation(`validate(id:1)`, testSchema)
+    expect(responseSuccess.data).toEqual({ validate: { id: 1 } })
+    expect(responseSuccess.errors).not.toBeDefined()
+
+    const responseError = await testOperation(`validate(id:2)`, testSchema)
+    expect(responseError.data).toBeNull()
+    expect(responseError.errors).toHaveLength(1)
+    expect(responseError.errors![0].message).toEqual('given id is not allowed');
+  })
 });
