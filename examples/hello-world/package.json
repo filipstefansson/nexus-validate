@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "apollo-server": "^2.19.2",
-    "graphql": "^15.4.0",
-    "nexus": "^1.0.0",
-    "nexus-validate": "1.0.0-alpha.4",
-    "yup": "^0.32.8"
+    "graphql": "^15.5.3",
+    "nexus": "^1.1.0",
+    "nexus-validate": "^1.0.0",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "ts-node": "^9.1.1",

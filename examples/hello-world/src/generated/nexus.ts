@@ -4,8 +4,8 @@
  */
 
 
-import { Context } from "./../context"
-import { ValidateResolver } from "nexus-validate"
+import type { Context } from "./../context"
+import type { ValidateResolver } from "nexus-validate"
 
 
 
@@ -168,6 +168,8 @@ export interface NexusGenTypes {
 
 declare global {
   interface NexusGenPluginTypeConfig<TypeName extends string> {
+  }
+  interface NexusGenPluginInputTypeConfig<TypeName extends string> {
   }
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
     /**

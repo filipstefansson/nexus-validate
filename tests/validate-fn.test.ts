@@ -1,6 +1,6 @@
 import { graphql } from 'graphql';
 import { makeSchema, objectType } from 'nexus';
-import { intArg, mutationField, stringArg } from 'nexus/dist/core';
+import { floatArg, intArg, mutationField, stringArg } from 'nexus/dist/core';
 import { UserInputError, validatePlugin } from '../src/index';
 
 describe('validatePlugin', () => {
@@ -48,13 +48,17 @@ describe('validatePlugin', () => {
     plugins: [validatePlugin()],
   });
   const mockCtx = { user: { id: 1 } };
-  const testOperation = (mutation: string, schema = testSchema) => {
+  const testOperation = (
+    mutation: string,
+    schema = testSchema,
+    fields?: string
+  ) => {
     return graphql(
       schema,
       `
         mutation {
           ${mutation} {
-            id
+            ${fields ? fields : 'id'}
           }
         }
       `,
@@ -153,5 +157,65 @@ describe('validatePlugin', () => {
     expect(data?.shouldWarn).toEqual({ id: 1 });
     expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     expect(consoleErrorSpy.mock.calls[0]).toMatchSnapshot();
+  });
+
+  it('it transforms data if validation passed', async () => {
+    const schema = makeSchema({
+      outputs: false,
+      nonNullDefaults: {
+        output: true,
+      },
+      plugins: [validatePlugin()],
+      types: [
+        objectType({
+          name: 'ShouldTransform',
+          definition(t) {
+            t.int('round');
+            t.int('truncate');
+            t.string('trim');
+            t.string('lowercase');
+          },
+        }),
+        mutationField('shouldTransform', {
+          type: 'ShouldTransform',
+          args: {
+            round: floatArg(),
+            truncate: floatArg(),
+            trim: stringArg(),
+            lowercase: stringArg(),
+          },
+
+          // @ts-ignore
+          validate: ({ string, number }) => {
+            return {
+              round: number().round(),
+              truncate: number().truncate(),
+              trim: string().trim(),
+              lowercase: string().lowercase(),
+            };
+          },
+          resolve: (_, args) => args,
+        }),
+      ],
+    });
+
+    const { data } = await testOperation(
+      `
+      shouldTransform(round:5.9, trim: " trim me", lowercase: "LOWERCASE", truncate: 5.888)
+    `,
+      schema,
+      `
+      round
+      trim 
+      lowercase
+      truncate
+      `
+    );
+    expect(data?.shouldTransform).toEqual({
+      round: 6,
+      trim: 'trim me',
+      lowercase: 'lowercase',
+      truncate: 5,
+    });
   });
 });
