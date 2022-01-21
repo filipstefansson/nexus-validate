@@ -5,7 +5,7 @@
 
 
 import type { Context } from "./../context"
-import type { ValidateResolver } from "nexus-validate"
+import type { ValidateResolver, InputObjectValidateResolver } from "nexus-validate"
 
 
 
@@ -15,6 +15,9 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  FilterInput: { // input type
+    sort?: string | null; // String
+  }
   UserInput: { // input type
     email?: string | null; // String
   }
@@ -104,6 +107,7 @@ export interface NexusGenArgTypes {
   }
   User: {
     friends: { // args
+      filter?: NexusGenInputs['FilterInput'] | null; // FilterInput
       query?: NexusGenInputs['UserInput'] | null; // UserInput
     }
   }
@@ -170,6 +174,10 @@ declare global {
   interface NexusGenPluginTypeConfig<TypeName extends string> {
   }
   interface NexusGenPluginInputTypeConfig<TypeName extends string> {
+    /**
+     * Validate mutation arguments.
+     */
+    validate?: InputObjectValidateResolver
   }
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
     /**

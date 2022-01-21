@@ -2,6 +2,10 @@
 ### Do not make changes to this file directly
 
 
+input FilterInput {
+  sort: String
+}
+
 type Mutation {
   createUser(age: Int, email: String, name: String, secret: String, website: String): User
 }
@@ -13,7 +17,7 @@ type Query {
 type User {
   age: Int
   email: String
-  friends(query: UserInput): [User]
+  friends(filter: FilterInput, query: UserInput): [User]
   name: String
   secret: String
   website: String

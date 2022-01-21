@@ -25,9 +25,19 @@ export const UserInput = inputObjectType({
   definition(t) {
     t.string('email');
   },
-  // @ts-ignore requires https://github.com/graphql-nexus/nexus/pull/799
   validate: ({ string }) => ({
-    email: string().email().required(),
+    // this is made required in the other validate below
+    email: string().email(),
+  }),
+});
+
+export const FilterInput = inputObjectType({
+  name: 'FilterInput',
+  definition(t) {
+    t.string('sort');
+  },
+  validate: ({ string }) => ({
+    sort: string().oneOf(['desc', 'asc']),
   }),
 });
 
@@ -45,7 +55,15 @@ export const User = objectType({
         query: arg({
           type: UserInput,
         }),
+        filter: arg({
+          type: FilterInput,
+        }),
       },
+      validate: ({ string, object }) => ({
+        query: object({
+          email: string().required(),
+        }),
+      }),
       resolve: (_, args) => {
         return USERS;
       },
