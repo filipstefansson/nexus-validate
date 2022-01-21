@@ -11,7 +11,7 @@ import { resolver } from './resolver';
 
 const ValidateResolverImport = printedGenTypingImport({
   module: 'nexus-validate',
-  bindings: ['ValidateResolver'],
+  bindings: ['ValidateResolver', 'InputObjectValidateResolver'],
 });
 
 const fieldDefTypes = printedGenTyping({
@@ -39,7 +39,6 @@ export const validatePlugin = (validateConfig: ValidatePluginConfig = {}) => {
     name: 'NexusValidate',
     description: 'The validate plugin provides validation for arguments.',
     fieldDefTypes: fieldDefTypes,
-    // @ts-ignore requires: https://github.com/graphql-nexus/nexus/pull/799
     inputObjectTypeDefTypes: inputObjectdDefTypes,
     onCreateFieldResolver: resolver(validateConfig),
     onAddOutputField: (config) => {
@@ -54,13 +53,24 @@ export const validatePlugin = (validateConfig: ValidatePluginConfig = {}) => {
         }
 
         // create schema
-        let schema = validate(rules);
-
-        // @ts-ignore
-        // create a nested schema for this arg
-        config['validate'] = () => ({
+        const schema = validate(rules);
+        const fn = () => ({
           [key]: rules.object(schema),
         });
+
+        // @ts-ignore we know validate might exist here
+        let validateConfig = config['validate'];
+
+        // pass it to validation array
+        if (Array.isArray(validateConfig)) {
+          validateConfig = [...validateConfig, fn];
+        } else {
+          validateConfig = [fn];
+        }
+
+        // @ts-ignore
+        // update config
+        config['validate'] = validateConfig;
       });
 
       return config;

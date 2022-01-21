@@ -1,6 +1,7 @@
 import { graphql } from 'graphql';
 import { makeSchema, objectType } from 'nexus';
 import { floatArg, intArg, mutationField, stringArg } from 'nexus/dist/core';
+
 import { UserInputError, validatePlugin } from '../src/index';
 
 describe('validatePlugin', () => {
