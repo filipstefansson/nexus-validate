@@ -15,8 +15,8 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "graphql": "^15.x",
-    "nexus": "^1.1.0",
+    "graphql": "^16.x",
+    "nexus": "^1.3.x",
     "yup": "^0.32.9"
   },
   "devDependencies": {
