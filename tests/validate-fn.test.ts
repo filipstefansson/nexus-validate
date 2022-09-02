@@ -53,18 +53,18 @@ describe('validatePlugin', () => {
     schema = testSchema,
     fields?: string
   ) => {
-    return graphql(
+    return graphql({
       schema,
-      `
+      source: `
         mutation {
           ${mutation} {
             ${fields ? fields : 'id'}
           }
         }
       `,
-      {},
-      mockCtx
-    );
+      rootValue: {},
+      contextValue: mockCtx
+    });
   };
 
   it('returns error of validation error', async () => {
@@ -206,7 +206,7 @@ describe('validatePlugin', () => {
       schema,
       `
       round
-      trim 
+      trim
       lowercase
       truncate
       `
