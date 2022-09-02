@@ -64,7 +64,7 @@ export const resolver =
         if (typeof schemaBase !== 'undefined') {
           const schema = rules.object().shape(schemaBase);
           // update args to the transformed ones by yup
-          args = await schema.validate(args);
+          args = await schema.validate(args, { context: ctx });
         }
         return next(root, args, ctx, info);
       } catch (_error) {
